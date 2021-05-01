@@ -1,5 +1,7 @@
-from .readstr import readstr
+from .readstr import readstr, reads, reads_generic
 
 __all__ = [
-    'readstr'
+    'readstr',
+    'reads',
+    'reads_generic',
 ]

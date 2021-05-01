@@ -5,6 +5,7 @@ import uuid
 from enum import Enum
 
 from readstr import readstr
+from readstr.readstr import reads
 
 
 class Shape(Enum):
@@ -70,6 +71,17 @@ class ReadStrTestCase(unittest.TestCase):
 
     def test_read_date(self):
         self.assertEqual(datetime.date(2020, 1, 18), readstr('2020-01-18', datetime.date))
+
+    def test_extensibility(self):
+        @reads
+        def read_specialized_dict(str_value: str) -> typing.Dict[str, int]:
+            import json
+            return json.loads(str_value)
+
+        self.assertEqual({
+            'foo': 100,
+            'bar': 200,
+        }, readstr('{"foo": 100, "bar": 200}', typing.Dict[str, int]))
 
 
 if __name__ == '__main__':
