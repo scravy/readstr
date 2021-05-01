@@ -39,7 +39,7 @@ jobs:
       run: |
         pip install pylint
         # E1136 happens spuriously on Python 3.9 and pylint - https://github.com/PyCQA/pylint/issues/3882
-        pylint --disable=C,R,W,E1136 apm
+        pylint --disable=C,R,W,E1136 readstr
     - name: Run tests
       run: |
         python -m unittest -v
