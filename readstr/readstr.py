@@ -13,15 +13,27 @@ except ImportError:
 try:
     from typing import get_args  # pylint: disable=no-member
 except ImportError:
-    def get_args():
-        return tuple()
+    # noinspection PyUnresolvedReferences
+    def get_args(tp):
+        # noinspection PyProtectedMember
+        if isinstance(tp, type(typing.Union)) and not tp._special:
+            res = tp.__args__
+            import collections
+            if get_origin(tp) is collections.abc.Callable and res[0] is not Ellipsis:
+                res = (list(res[:-1]), res[-1])
+            return res
+        return ()
 
 try:
     from typing import get_origin  # pylint: disable=no-member
 except ImportError:
-    def get_origin():
+    def get_origin(tp):
+        if isinstance(tp, type(typing.Union)):
+            # noinspection PyUnresolvedReferences
+            return tp.__origin__
+        if tp is typing.Generic:
+            return typing.Generic
         return None
-
 
 from readstr.base64 import base64_decode
 
