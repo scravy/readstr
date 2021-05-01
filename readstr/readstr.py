@@ -4,6 +4,25 @@ import typing
 import uuid
 from enum import Enum
 
+try:
+    from typing import Literal  # pylint: disable=no-member
+except ImportError:
+    class Literal:
+        pass
+
+try:
+    from typing import get_args  # pylint: disable=no-member
+except ImportError:
+    def get_args():
+        return tuple()
+
+try:
+    from typing import get_origin  # pylint: disable=no-member
+except ImportError:
+    def get_origin():
+        return None
+
+
 from readstr.base64 import base64_decode
 
 _READERS = {}
@@ -135,7 +154,7 @@ def read_set(str_value: str, args: tuple) -> set:
     return result
 
 
-@reads_generic(typing.Literal)
+@reads_generic(Literal)
 def read_literal(str_value: str, args: tuple):
     if str_value in args:
         return str_value
@@ -164,7 +183,7 @@ def readstr(str_value: str, target):
             return enum_value
     if target in _READERS:
         return _READERS[target](str_value)
-    origin = typing.get_origin(target)
+    origin = get_origin(target)
     if origin is not None and origin in _READERS:
-        return _READERS[origin](str_value, typing.get_args(target))
+        return _READERS[origin](str_value, get_args(target))
     raise ValueError(f'no way to convert into {target}: "{str_value}"')
