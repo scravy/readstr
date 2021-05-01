@@ -1,4 +1,4 @@
-from .read_any import readstr
+from .readstr import readstr
 
 __all__ = [
     'readstr'

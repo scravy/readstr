@@ -29,6 +29,8 @@ class ReadStrTestCase(unittest.TestCase):
 
     def test_read_enum(self):
         self.assertEqual(Shape.DIAMOND, readstr('rhomb', Shape))
+        with self.assertRaises(ValueError):
+            readstr('rectangle', Shape)
 
     def test_read_dict(self):
         expected = {

@@ -81,6 +81,12 @@ def read_decimal(str_value: str) -> decimal.Decimal:
 
 @reads
 def read_date(str_value: str) -> datetime.date:
+    if str_value.lower() in ('now', 'today'):
+        return datetime.date.today()
+    if str_value.lower() == 'yesterday':
+        return datetime.date.today() - datetime.timedelta(days=1)
+    if str_value.lower() == 'tomorrow':
+        return datetime.date.today() + datetime.timedelta(days=1)
     return datetime.date.fromisoformat(str_value)
 
 
