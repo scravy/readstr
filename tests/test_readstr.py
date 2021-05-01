@@ -3,20 +3,8 @@ import typing
 import unittest
 import uuid
 from enum import Enum
-from unittest import skipIf
 
 from readstr import readstr
-
-no_literal = False
-
-try:
-    from typing import Literal  # pylint: disable=no-member
-except ImportError:
-    no_literal = True
-
-
-    class Literal:
-        pass
 
 
 class Shape(Enum):
@@ -54,17 +42,15 @@ class ReadStrTestCase(unittest.TestCase):
             readstr('a=vUfDOuQwRVavn3_QjMxp7Q,b=vUfDOuQwRVavn3_QjMxp7Q==', typing.Dict[str, uuid.UUID]),
         )
 
-    @skipIf(no_literal, "no typing.Literal available in this python version")
     def test_read_literal(self):
-        self.assertEqual('foo', readstr('foo', Literal['foo', 'bar']))
+        self.assertEqual('foo', readstr('foo', typing.Literal['foo', 'bar']))
         with self.assertRaises(ValueError):
             readstr('qux', typing.Literal['foo', 'bar'])
 
-    @skipIf(no_literal, "no typing.Literal available in this python version")
     def test_read_literal_set(self):
-        self.assertEqual({'foo', 'bar'}, readstr('foo,bar', typing.Set[Literal['foo', 'bar', 'qux']]))
+        self.assertEqual({'foo', 'bar'}, readstr('foo,bar', typing.Set[typing.Literal['foo', 'bar', 'qux']]))
         with self.assertRaises(ValueError):
-            readstr('foo,bar,quuz', typing.Set[Literal['foo', 'bar', 'qux']])
+            readstr('foo,bar,quuz', typing.Set[typing.Literal['foo', 'bar', 'qux']])
 
     def test_read_optional(self):
         self.assertEqual(7, readstr('7', typing.Optional[int]))
