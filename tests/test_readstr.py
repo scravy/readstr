@@ -26,7 +26,7 @@ except ImportError:
     no_get_args = True
 
 
-    def get_args():
+    def get_args(*args, **kwargs):
         return tuple()
 
 no_get_origin = False
@@ -37,7 +37,7 @@ except ImportError:
     no_get_origin = True
 
 
-    def get_origin():
+    def get_origin(*args, **kwargs):
         return None
 
 
