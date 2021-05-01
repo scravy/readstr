@@ -9,11 +9,19 @@ from readstr.base64 import base64_decode
 _READERS = {}
 
 
+# noinspection PyShadowingBuiltins
+def reads_generic(type):
+    def decorator(func):
+        _READERS[type] = func
+        return func
+
+    return decorator
+
+
 def reads(func):
     typehints = typing.get_type_hints(func)
     returns = typehints['return']
-    _READERS[returns] = func
-    return func
+    return reads_generic(returns)(func)
 
 
 @reads
@@ -127,15 +135,15 @@ def read_set(str_value: str, args: tuple) -> set:
     return result
 
 
-@reads
-def read_literal(str_value: str, args: tuple) -> typing.Literal:
+@reads_generic(typing.Literal)
+def read_literal(str_value: str, args: tuple):
     if str_value in args:
         return str_value
     raise ValueError(f'{str_value} is not any of {args}')
 
 
-@reads
-def read_union(str_value, args: tuple) -> typing.Union:
+@reads_generic(typing.Union)
+def read_union(str_value, args: tuple):
     for arg in args:
         try:
             return readstr(str_value, arg)
