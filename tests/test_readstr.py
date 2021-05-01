@@ -34,10 +34,12 @@ no_get_origin = False
 try:
     from typing import get_origin  # pylint: disable=no-member
 except ImportError:
-    no_get_origin = True
-
-
-    def get_origin(*args, **kwargs):
+    def get_origin(tp):
+        if isinstance(tp, type(typing.Union)):
+            # noinspection PyUnresolvedReferences
+            return tp.__origin__
+        if tp is typing.Generic:
+            return typing.Generic
         return None
 
 
