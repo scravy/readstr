@@ -6,6 +6,7 @@ import unittest
 import uuid
 from dataclasses import dataclass
 from enum import Enum
+from unittest import skipIf
 
 from readstr import readstr
 from readstr.readstr import reads
@@ -97,17 +98,24 @@ class ReadStrTestCase(unittest.TestCase):
         value = '1,2,3'
         expected = [1, 2, 3]
         self.assertEqual(expected, readstr(value, typing.Sequence[int]))
-        if sys.version_info >= (3, 10):
-            # noinspection PyUnresolvedReferences
-            self.assertEqual(expected, readstr(value, collections.abc.Sequence[int]))
+
+    @skipIf(sys.version_info < (3, 10), "abc supports generics only from 3.10+")
+    def test_sequence_abc(self):
+        value = '1,2,3'
+        expected = [1, 2, 3]
+        self.assertEqual(expected, readstr(value, typing.Sequence[int]))
 
     def test_mapping(self):
         value = 'foo=3'
         expected = {'foo': 3}
         self.assertEqual(expected, readstr(value, typing.Mapping[str, int]))
-        if sys.version_info >= (3, 10):
-            # noinspection PyUnresolvedReferences
-            self.assertEqual(expected, readstr(value, collections.abc.Mapping[str, int]))
+
+    @skipIf(sys.version_info < (3, 10), "abc supports generics only from 3.10+")
+    def test_mapping_abc(self):
+        value = 'foo=3'
+        expected = {'foo': 3}
+        # noinspection PyUnresolvedReferences
+        self.assertEqual(expected, readstr(value, collections.abc.Mapping[str, int]))
 
 
 if __name__ == '__main__':
