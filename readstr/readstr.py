@@ -1,6 +1,7 @@
 import collections
 import datetime
 import decimal
+import sys
 import typing
 import uuid
 from enum import Enum
@@ -162,10 +163,14 @@ def read_union(str_value, args: tuple):
 
 
 @reads_generic(typing.Sequence)
-@reads_generic(collections.Sequence)
 def read_sequence(str_value: str, args: tuple):
     arg_type, = args
     return [readstr(v, arg_type) for v in str_value.split(',')]
+
+
+if sys.version_info >= (3, 10):
+    # noinspection PyUnresolvedReferences
+    reads_generic(collections.abc.Sequence)(read_sequence)
 
 
 def readstr(str_value: str, target):
