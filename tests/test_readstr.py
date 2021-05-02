@@ -96,7 +96,8 @@ class ReadStrTestCase(unittest.TestCase):
     def test_sequence(self):
         self.assertEqual([1, 2, 3], readstr('1,2,3', typing.Sequence[int]))
         if sys.version_info >= (3, 10):
-            self.assertEqual([1, 2, 3], readstr('1,2,3', collections.Sequence[int]))
+            # noinspection PyUnresolvedReferences
+            self.assertEqual([1, 2, 3], readstr('1,2,3', collections.abc.Sequence[int]))
 
 
 if __name__ == '__main__':
