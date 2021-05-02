@@ -87,6 +87,11 @@ def read_float(str_value: str) -> float:
 
 
 @reads
+def read_complex(str_value: str) -> complex:
+    return complex(str_value)
+
+
+@reads
 def read_decimal(str_value: str) -> decimal.Decimal:
     return decimal.Decimal(str_value)
 
@@ -115,6 +120,11 @@ def read_tuple(str_value: str, args: tuple) -> tuple:
     if len(result) != len(args):
         ValueError(f"not enough values to populate tuple: {str_value} (expected: {len(args)}")
     return result
+
+
+@reads
+def read_bytes(str_value):
+    return base64_decode(str_value)
 
 
 # noinspection PyUnresolvedReferences
