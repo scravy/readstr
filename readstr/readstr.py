@@ -103,6 +103,13 @@ def read_date(str_value: str) -> datetime.date:
 
 
 @reads
+def read_datetime(str_value: str) -> datetime.datetime:
+    if str_value.lower() == 'now':
+        return datetime.datetime.now()
+    return datetime.datetime.fromisoformat(str_value)
+
+
+@reads
 def read_tuple(str_value: str, args: tuple) -> tuple:
     result = tuple((readstr(arg_value, arg_type) for arg_value, arg_type in zip(str_value.split(','), args)))
     if len(result) != len(args):
@@ -110,7 +117,7 @@ def read_tuple(str_value: str, args: tuple) -> tuple:
     return result
 
 
-# @reads_generic(typing.Mapping)
+# noinspection PyUnresolvedReferences
 @reads_generic(collections.abc.Mapping)
 @reads
 def read_dict(str_value: str, args: tuple) -> dict:
@@ -126,7 +133,7 @@ def read_dict(str_value: str, args: tuple) -> dict:
     return result
 
 
-# @reads_generic(typing.Sequence)
+# noinspection PyUnresolvedReferences
 @reads_generic(collections.abc.Sequence)
 @reads
 def read_list(str_value: str, args: tuple) -> list:
@@ -134,7 +141,7 @@ def read_list(str_value: str, args: tuple) -> list:
     return [readstr(v, arg_type) for v in str_value.split(',')]
 
 
-# @reads_generic(typing.Set)
+# noinspection PyUnresolvedReferences
 @reads_generic(collections.abc.Set)
 @reads
 def read_set(str_value: str, args: tuple) -> set:
