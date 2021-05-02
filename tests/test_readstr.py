@@ -94,10 +94,20 @@ class ReadStrTestCase(unittest.TestCase):
         self.assertEqual(Foo('meow'), readstr('meow', Foo))
 
     def test_sequence(self):
-        self.assertEqual([1, 2, 3], readstr('1,2,3', typing.Sequence[int]))
+        value = '1,2,3'
+        expected = [1, 2, 3]
+        self.assertEqual(expected, readstr(value, typing.Sequence[int]))
         if sys.version_info >= (3, 10):
             # noinspection PyUnresolvedReferences
-            self.assertEqual([1, 2, 3], readstr('1,2,3', collections.abc.Sequence[int]))
+            self.assertEqual(expected, readstr(value, collections.abc.Sequence[int]))
+
+    def test_mapping(self):
+        value = 'foo=3'
+        expected = {'foo': 3}
+        self.assertEqual(expected, readstr(value, typing.Mapping[str, int]))
+        if sys.version_info >= (3, 10):
+            # noinspection PyUnresolvedReferences
+            self.assertEqual(expected, readstr(value, collections.abc.Mapping[str, int]))
 
 
 if __name__ == '__main__':
