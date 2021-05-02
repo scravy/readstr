@@ -19,8 +19,11 @@ def reads_generic(type):
 
 
 def reads(func):
-    typehints = typing.get_type_hints(func)
-    returns = typehints['return']
+    if isinstance(func, type):
+        returns = func
+    else:
+        typehints = typing.get_type_hints(func)
+        returns = typehints['return']
     return reads_generic(returns)(func)
 
 
@@ -99,12 +102,15 @@ def read_date(str_value: str) -> datetime.date:
 
 
 @reads
-def read_tuple(str_value: str, args) -> tuple:
-    return tuple((readstr(arg_value, arg_type) for arg_value, arg_type in zip(str_value.split(','), args)))
+def read_tuple(str_value: str, args: tuple) -> tuple:
+    result = tuple((readstr(arg_value, arg_type) for arg_value, arg_type in zip(str_value.split(','), args)))
+    if len(result) != len(args):
+        ValueError(f"not enough values to populate tuple: {str_value} (expected: {len(args)}")
+    return result
 
 
 @reads
-def read_dict(str_value: str, args) -> dict:
+def read_dict(str_value: str, args: tuple) -> dict:
     key_type, value_type = args
     result = dict()
     for v in str_value.split(','):

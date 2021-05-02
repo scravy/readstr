@@ -2,6 +2,7 @@ import datetime
 import typing
 import unittest
 import uuid
+from dataclasses import dataclass
 from enum import Enum
 
 from readstr import readstr
@@ -82,6 +83,13 @@ class ReadStrTestCase(unittest.TestCase):
             'foo': 100,
             'bar': 200,
         }, readstr('{"foo": 100, "bar": 200}', typing.Dict[str, int]))
+
+        @dataclass
+        @reads
+        class Foo:
+            bar: str
+
+        self.assertEqual(Foo('meow'), readstr('meow', Foo))
 
 
 if __name__ == '__main__':
