@@ -129,7 +129,7 @@ def read_tuple(str_value: str, args: tuple) -> tuple:
 
 
 @reads
-def read_bytes(str_value):
+def read_bytes(str_value) -> bytes:
     return base64_decode(str_value)
 
 
