@@ -111,7 +111,7 @@ def read_tuple(str_value: str, args: tuple) -> tuple:
 
 
 # @reads_generic(typing.Mapping)
-# @reads_generic(collections.abc.Mapping)
+@reads_generic(collections.abc.Mapping)
 @reads
 def read_dict(str_value: str, args: tuple) -> dict:
     key_type, value_type = args
@@ -127,7 +127,7 @@ def read_dict(str_value: str, args: tuple) -> dict:
 
 
 # @reads_generic(typing.Sequence)
-# @reads_generic(collections.abc.Sequence)
+@reads_generic(collections.abc.Sequence)
 @reads
 def read_list(str_value: str, args: tuple) -> list:
     arg_type, = args
@@ -135,7 +135,7 @@ def read_list(str_value: str, args: tuple) -> list:
 
 
 # @reads_generic(typing.Set)
-# @reads_generic(collections.abc.Set)
+@reads_generic(collections.abc.Set)
 @reads
 def read_set(str_value: str, args: tuple) -> set:
     arg_type, = args
