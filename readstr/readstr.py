@@ -1,3 +1,4 @@
+import collections
 import datetime
 import decimal
 import typing
@@ -125,20 +126,20 @@ def read_dict(str_value: str, args: tuple) -> dict:
 
 @reads
 def read_list(str_value: str, args: tuple) -> list:
-    result = list()
     arg_type, = args
-    for v in str_value.split(','):
-        result.append(readstr(v, arg_type))
-    return result
+    return [readstr(v, arg_type) for v in str_value.split(',')]
 
 
 @reads
 def read_set(str_value: str, args: tuple) -> set:
-    result = set()
     arg_type, = args
-    for v in str_value.split(','):
-        result.add(readstr(v, arg_type))
-    return result
+    return {readstr(v, arg_type) for v in str_value.split(',')}
+
+
+@reads
+def read_frozenset(str_value: str, args: tuple) -> frozenset:
+    arg_type, = args
+    return frozenset((readstr(v, arg_type) for v in str_value.split(',')))
 
 
 @reads_generic(typing.Literal)
@@ -158,6 +159,13 @@ def read_union(str_value, args: tuple):
     if type(None) in args:
         return None
     raise ValueError(f'{str_value} could not be converted into any of {args}')
+
+
+@reads_generic(typing.Sequence)
+@reads_generic(collections.Sequence)
+def read_sequence(str_value: str, args: tuple):
+    arg_type, = args
+    return [readstr(v, arg_type) for v in str_value.split(',')]
 
 
 def readstr(str_value: str, target):

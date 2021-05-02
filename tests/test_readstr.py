@@ -1,4 +1,6 @@
+import collections
 import datetime
+import sys
 import typing
 import unittest
 import uuid
@@ -90,6 +92,11 @@ class ReadStrTestCase(unittest.TestCase):
             bar: str
 
         self.assertEqual(Foo('meow'), readstr('meow', Foo))
+
+    def test_sequence(self):
+        self.assertEqual([1, 2, 3], readstr('1,2,3', typing.Sequence[int]))
+        if sys.version_info >= (3, 10):
+            self.assertEqual([1, 2, 3], readstr('1,2,3', collections.Sequence[int]))
 
 
 if __name__ == '__main__':
