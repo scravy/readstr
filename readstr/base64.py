@@ -5,6 +5,11 @@ _tt = bytes.maketrans(b'-_', b'+/')
 
 
 def base64_decode(base64_encoded: Union[str, bytes]) -> bytes:
+    """
+    Reads base64 and modified base64, even with missing padding.
+    :param base64_encoded: A base64 or modified base64 encoded str or bytes object, with or without padding.
+    :return: The decoded bytes.
+    """
     actual_length = len(base64_encoded)
     missing_padding = 4 - (actual_length % 4)
     if isinstance(base64_encoded, str):

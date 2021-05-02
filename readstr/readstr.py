@@ -4,6 +4,7 @@ import decimal
 import typing
 import uuid
 from enum import Enum
+from pathlib import Path
 
 from readstr.base64 import base64_decode
 
@@ -112,6 +113,11 @@ def read_datetime(str_value: str) -> datetime.datetime:
     if str_value.lower() == 'now':
         return datetime.datetime.now()
     return datetime.datetime.fromisoformat(str_value)
+
+
+@reads
+def read_path(str_value: str) -> Path:
+    return Path(str_value)
 
 
 @reads
