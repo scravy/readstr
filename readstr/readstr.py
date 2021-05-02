@@ -163,6 +163,7 @@ def read_union(str_value, args: tuple):
 
 
 @reads_generic(typing.Sequence)
+@reads_generic(collections.Sequence)
 def read_sequence(str_value: str, args: tuple):
     arg_type, = args
     return [readstr(v, arg_type) for v in str_value.split(',')]
