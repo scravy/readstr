@@ -30,7 +30,9 @@ def reads(func):
 
 
 @reads
-def read_uuid(str_value: str) -> uuid.UUID:
+def read_uuid(str_value: typing.Union[str, uuid.UUID]) -> uuid.UUID:
+    if isinstance(str_value, uuid.UUID):
+        return str_value
     try:
         return uuid.UUID(str_value)
     except ValueError:

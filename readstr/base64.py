@@ -1,10 +1,9 @@
 import base64
 from typing import Union
 
-_tt = bytes.maketrans(b'-_', b'+/')
 
-
-def base64_decode(base64_encoded: Union[str, bytes]) -> bytes:
+# noinspection PyIncorrectDocstring
+def base64_decode(base64_encoded: Union[str, bytes], *, _tt=bytes.maketrans(b'-_', b'+/')) -> bytes:
     """
     Reads base64 and modified base64, even with missing padding.
     :param base64_encoded: A base64 or modified base64 encoded str or bytes object, with or without padding.
