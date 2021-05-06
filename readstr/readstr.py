@@ -6,7 +6,7 @@ import uuid
 from enum import Enum
 from pathlib import Path
 
-from readstr.base64 import base64_decode
+from .base64 import base64_decode
 
 _READERS = {}
 
