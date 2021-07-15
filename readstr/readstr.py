@@ -205,4 +205,7 @@ def readstr(str_value: str, target):
     origin = typing.get_origin(target)
     if origin is not None and origin in _READERS:
         return _READERS[origin](str_value, typing.get_args(target))
-    raise ValueError(f'no way to convert into {target}: "{str_value}"')
+    try:
+        return target(str_value)
+    except Exception:
+        raise ValueError(f'no way to convert into {target}: "{str_value}"')

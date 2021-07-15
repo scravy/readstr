@@ -117,6 +117,22 @@ class ReadStrTestCase(unittest.TestCase):
         # noinspection PyUnresolvedReferences
         self.assertEqual(expected, readstr(value, collections.abc.Mapping[str, int]))
 
+    def test_unknown(self):
+        @dataclass(frozen=True)
+        class Something:
+            value: str
+
+        some_value = 'something'
+        self.assertEqual(Something(some_value), readstr(some_value, Something))
+
+    def test_unknown_impossible(self):
+        class DoesntWork:
+            pass
+
+        some_value = 'something'
+        with self.assertRaises(ValueError):
+            readstr(some_value, DoesntWork)
+
 
 if __name__ == '__main__':
     unittest.main()
