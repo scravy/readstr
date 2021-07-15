@@ -27,10 +27,8 @@ def args_as_env(argv: List[str] = sys.argv):
             key = arg[1:]
         else:
             continue
-        print(key)
         if '=' in key:
             key, arg_value = key.split('=', maxsplit=1)
-            print(key, arg_value)
         else:
             skip = True
         env[key.translate(str.maketrans({'-': '_'})).upper()] = arg_value
@@ -90,6 +88,23 @@ def from_env_or_args(t: Type[T],
                      argv: List[str] = sys.argv) -> T:
     """
     Read a dataclass from environment variables or from command line arguments.
+
+    Command line arguments override environment variables.
+
+    Given a dataclass:
+
+    @dataclass
+    class Config:
+        key: str
+
+    The following invocations of `some.py` will read the same `Config` object:
+
+    KEY=value ./some.py
+    ./some.py --key value
+    ./some.py --key=value
+    ./some.py -key value
+    ./some.py -key=value
+    export KEY=value; ./some.py
     """
     args_env = args_as_env(argv)
     return from_env(t, lambda k: otherwise(args_env.get(k), lambda: getenv(k)))
