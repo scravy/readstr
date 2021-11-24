@@ -31,17 +31,25 @@ def reads(func):
 
 @reads
 def read_uuid(str_value: typing.Union[str, uuid.UUID]) -> uuid.UUID:
+    if not str_value:
+        return uuid.UUID('00000000-0000-0000-0000-000000000000')
     if isinstance(str_value, uuid.UUID):
         return str_value
+    exceptions = []
     try:
         return uuid.UUID(str_value)
-    except ValueError:
-        pass
+    except (ValueError, TypeError) as exc:
+        exceptions.append(exc)
     try:
         return uuid.UUID(bytes=base64_decode(str_value))
-    except ValueError:
-        pass
-    raise ValueError('not a UUID in any recognized format')
+    except (ValueError, TypeError) as exc:
+        exceptions.append(exc)
+    exc_message = ''
+    if exceptions:
+        exc_message = ', '.join(f"{type(exc).__name}: {exc}" for exc in exceptions)
+        exc_message = f' (Errors while processing: {exc_message})'
+    raise ValueError(
+        f'"{str_value}" (of type {type(str_value).__name__}) is not a UUID in any recognized format{exc_message}')
 
 
 @reads
