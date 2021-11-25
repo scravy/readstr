@@ -46,7 +46,7 @@ def read_uuid(str_value: typing.Union[str, uuid.UUID]) -> uuid.UUID:
         exceptions.append(exc)
     exc_message = ''
     if exceptions:
-        exc_message = ', '.join(f"{type(exc).__name}: {exc}" for exc in exceptions)
+        exc_message = ', '.join(f"{type(exc).__name__}: {exc}" for exc in exceptions)
         exc_message = f' (Errors while processing: {exc_message})'
     raise ValueError(
         f'"{str_value}" (of type {type(str_value).__name__}) is not a UUID in any recognized format{exc_message}')
@@ -108,7 +108,9 @@ def read_decimal(str_value: str) -> decimal.Decimal:
 
 
 @reads
-def read_date(str_value: str) -> datetime.date:
+def read_date(str_value: typing.Union[str, datetime.date]) -> datetime.date:
+    if isinstance(str_value, datetime.date):
+        return str_value
     if str_value.lower() in ('now', 'today'):
         return datetime.date.today()
     if str_value.lower() == 'yesterday':
