@@ -1,19 +1,19 @@
 import dataclasses
 import os
 import sys
+import typing as ty
 from itertools import zip_longest
-from typing import TypeVar, Type, Callable, Optional, List
 
 from readstr import readstr
 
-T = TypeVar('T')
+T = ty.TypeVar('T')
 
 
 class ReadException(Exception):
     pass
 
 
-def args_as_env(argv: List[str] = sys.argv):
+def args_as_env(argv: ty.List[str] = sys.argv):
     skip = False
     env = dict()
     for arg, arg_value in zip_longest(argv[1:], argv[2:], fillvalue=None):
@@ -35,7 +35,11 @@ def args_as_env(argv: List[str] = sys.argv):
     return env
 
 
-def from_env(t: Type[T], getenv: Callable[[str], Optional[str]] = os.environ.get) -> T:
+def from_env(
+          t: ty.Type[T],
+          *,
+          getenv: ty.Callable[[str], ty.Optional[str]] = os.environ.get
+) -> T:
     """
     Read a dataclass from environment variables.
 
@@ -83,9 +87,12 @@ def otherwise(value, fallback):
     return value
 
 
-def from_env_or_args(t: Type[T],
-                     getenv: Callable[[str], Optional[str]] = os.environ.get,
-                     argv: List[str] = sys.argv) -> T:
+def from_env_or_args(
+          t: ty.Type[T],
+          *,
+          getenv: ty.Callable[[str], ty.Optional[str]] = os.environ.get,
+          argv: ty.List[str] = sys.argv
+) -> T:
     """
     Read a dataclass from environment variables or from command line arguments.
 
@@ -107,4 +114,4 @@ def from_env_or_args(t: Type[T],
     export KEY=value; ./some.py
     """
     args_env = args_as_env(argv)
-    return from_env(t, lambda k: otherwise(args_env.get(k), lambda: getenv(k)))
+    return from_env(t, getenv=lambda k: otherwise(args_env.get(k), lambda: getenv(k)))

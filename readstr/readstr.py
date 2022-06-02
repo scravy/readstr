@@ -1,7 +1,7 @@
 import collections
 import datetime
 import decimal
-import typing
+import typing as ty
 import uuid
 from enum import Enum
 from pathlib import Path
@@ -24,13 +24,13 @@ def reads(func):
     if isinstance(func, type):
         returns = func
     else:
-        typehints = typing.get_type_hints(func)
+        typehints = ty.get_type_hints(func)
         returns = typehints['return']
     return reads_generic(returns)(func)
 
 
 @reads
-def read_uuid(str_value: typing.Union[str, uuid.UUID]) -> uuid.UUID:
+def read_uuid(str_value: ty.Union[str, uuid.UUID]) -> uuid.UUID:
     if not str_value:
         return uuid.UUID('00000000-0000-0000-0000-000000000000')
     if isinstance(str_value, uuid.UUID):
@@ -49,7 +49,7 @@ def read_uuid(str_value: typing.Union[str, uuid.UUID]) -> uuid.UUID:
         exc_message = ', '.join(f"{type(exc).__name__}: {exc}" for exc in exceptions)
         exc_message = f' (Errors while processing: {exc_message})'
     raise ValueError(
-        f'"{str_value}" (of type {type(str_value).__name__}) is not a UUID in any recognized format{exc_message}')
+        f'"{str_value}" (of type {type(str_value).__name__}) is not a UUID in any recognized format {exc_message}')
 
 
 @reads
@@ -108,7 +108,7 @@ def read_decimal(str_value: str) -> decimal.Decimal:
 
 
 @reads
-def read_date(str_value: typing.Union[str, datetime.date]) -> datetime.date:
+def read_date(str_value: ty.Union[str, datetime.date]) -> datetime.date:
     if isinstance(str_value, datetime.date):
         return str_value
     if str_value.lower() in ('now', 'today'):
@@ -183,14 +183,14 @@ def read_frozenset(str_value: str, args: tuple) -> frozenset:
     return frozenset((readstr(v, arg_type) for v in str_value.split(',')))
 
 
-@reads_generic(typing.Literal)
+@reads_generic(ty.Literal)
 def read_literal(str_value: str, args: tuple):
     if str_value in args:
         return str_value
     raise ValueError(f'{str_value} is not any of {args}')
 
 
-@reads_generic(typing.Union)
+@reads_generic(ty.Union)
 def read_union(str_value, args: tuple):
     for arg in args:
         try:
@@ -212,10 +212,10 @@ def readstr(str_value: str, target):
             return enum_value
     if target in _READERS:
         return _READERS[target](str_value)
-    origin = typing.get_origin(target)
+    origin = ty.get_origin(target)
     if origin is not None and origin in _READERS:
-        return _READERS[origin](str_value, typing.get_args(target))
+        return _READERS[origin](str_value, ty.get_args(target))
     try:
         return target(str_value)
-    except Exception:
-        raise ValueError(f'no way to convert into {target}: "{str_value}"')
+    except Exception as exc:
+        raise ValueError(f'no way to convert into {target}: "{str_value}"') from exc
